@@ -1,0 +1,7 @@
+Folder structure
+response status code
+notes in google doc
+Union/ anyOf from Extra Models
+api endpoint standards
+Implement security last after folder structure
+Write tests after completing entire folder structure

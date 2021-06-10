@@ -1,0 +1,168 @@
+Install --> pip install fastapi[all]
+
+Swagger UI -> http://127.0.0.1:8000/docs
+Alternative API Doc -> http://127.0.0.1:8000/redoc
+Raw Open API Schema -> http://127.0.0.1:8000/openapi.json
+
+Ctrl+Space to trigger the completion or hint
+
+Generic Types - These types that take type parameters in square brackets, like:
+  - List --> List[str] -> List with each of its items is of type str
+  - Tuple --> Tuple[int]; Tuple[int, int, str] --> tuple with 3 items, an int, another int, and a str
+  - Set --> Set[bytes]
+  - Dict --> Dict[int, string]
+  - Optional --> Optional[int]
+
+You can also declare a class as the type of a variable.
+
+Type hints cheat sheet --> https://mypy.readthedocs.io/en/latest/cheat_sheet_py3.html
+
+Decorator -->
+  That @something syntax in Python is called a "decorator".
+  You put it on top of a function.
+  A "decorator" takes the function below and does something with it.
+  In our case, this decorator tells FastAPI that the function below corresponds to the path / with an operation get.
+  It is the "path operation decorator".
+
+Difference between Concurrency and Parallelism, Asynchorous code, async-await, Coroutines
+  https://fastapi.tiangolo.com/async/#in-a-hurry
+
+Path Parameters -->
+  Predefined values
+    If you have a path operation that receives a path parameter, but you want the possible valid path parameter values to be predefined, you can use a standard Python Enum.
+
+Test Model:-
+  class User(BaseModel):
+    id: int
+    name = 'John Doe'
+    signup_ts: Optional[datetime] = None
+    friends: List[int] = []
+
+
+  external_data = {
+      'id': '123',
+      'signup_ts': '2019-06-01 12:22',
+      'friends': [1, 2, '3'],
+  }
+  user = User(**external_data)
+  print(user.id)
+  #> 123
+  print(repr(user.signup_ts))
+  #> datetime.datetime(2019, 6, 1, 12, 22)
+  print(user.friends)
+  #> [1, 2, 3]
+  print(user.dict())
+  """
+  {
+      'id': 123,
+      'signup_ts': datetime.datetime(2019, 6, 1, 12, 22),
+      'friends': [1, 2, 3],
+      'name': 'John Doe',
+  }
+  """
+
+Query() Paramer--> for query parameter validations
+  -Query(None)
+  -Query("fixedquery") --> default value as "fixedquery",
+    {Having a default value also makes the parameter optional.}
+  -when you need to declare a value as required while using Query, you can use ... as the
+    first argument: q: str = Query(..., min_length=3)
+
+Path()
+ -The same way you can declare more validations and metadata for query parameters with Query, you can declare the same type of validations and metadata for path parameters with Path.
+
+Body()
+  - Multiple body parameters --> You can add multiple body parameters to your path operation function, even though a request can only have a single body.
+  - Body-Fields
+
+Field()
+  -  you can declare validation and metadata inside of Pydantic models using Pydantic's Field.
+
+Cookie()
+  - Same way as Query
+
+Header()
+  - Same way as Query
+
+Form()
+  - Same way as Body
+
+File():
+  - Same as Form
+
+UploadFile():
+  - Same as Form
+
+
+Query, Path, Body, Cookie, Header, Form, File, UploadFile, status, HTTPException, are imported from fastapi
+Field, File, UploadFile are imported from pydantic
+
+example can be set using config in Models or example arg in function
+
+Union or anyOf
+
+When you need to receive form fields instead of JSON, you can use Form
+  - pip install python-multipart
+
+HTTPException, custom exception handlers
+
+decorators (path operations)-->
+  - response_model
+  - response_model_exclude_unset
+  - response_model_exclude_defaults
+  - response_model_exclude_none
+  - response_model_include
+  - response_model_exclude
+  - status_code
+  - tags --> by default == "default"
+  - summary
+  - description ==> {Endpoint desc}
+  - response_description
+  - deprecated
+
+JSON compatible encoder - to store json compatible data in DB.
+
+Dependency Injection 
+ - Import Depends from fastapi
+ - Dependency as Function and class
+ - Sub-Dependencies
+ - Dependencies in path operation decorators
+ - Dependencies with yield --> install "pip install async-exit-stack async-generator"
+
+Security
+ - OAuth2PasswordBearer from fastapi.security
+ - JWT --> https://jwt.io/
+ - pip install python-jose[cryptography] --> to generate and verify the JWT tokens in Python
+ - pip install passlib[bcrypt] --> PassLib is a great Python package to handle password hashes. The recommended algorithm is "Bcrypt"
+ - 
+
+Middleware
+  A "middleware" is a function that works with every request before it is processed by any specific path operation. And also with every response before returning it
+    - If you have dependencies with yield, the exit code will run after the middleware.
+    - If there were any background tasks, they will run after all the middleware.
+    The middleware function receives
+    - request
+    - A function call_next that will receive the request as a parameter
+      * This function will pass the request to the corresponding path operation.
+      * Then it returns the response generated by the corresponding path operation.
+    - The response can be modified further before returning it.
+  Custom proprietary headers can be added using the 'X-' prefix
+
+CORS(Cross-Origin Resource Sharing)
+ - CORS or "Cross-Origin Resource Sharing" refers to the situations when a frontend running in a browser has JavaScript code that communicates with a backend, and the backend is in a different "origin" than the frontend.
+ - An origin is the combination of protocol (http, https), domain (myapp.com, localhost, localhost.tiangolo.com), and port (80, 443, 8080).
+ Import from fastapi.middleware.cors import CORSMiddleware
+
+Background Tasks
+ - You can define background tasks to be run after returning a response
+ - This is useful for operations that need to happen after a request, but that the client doesn't really have to be waiting for the operation to complete before receiving the response
+
+Static files
+ - pip install aiofiles
+
+Testing
+ - pip install pytest
+ - Also install requests --> pip install requests
+
+Project Template
+https://github.com/bergran/fast-api-project-template
