@@ -1,3 +1,3 @@
 # fast_api
 
-A practice API is developed using fast_api
+An API is developed using fast_api for practice
